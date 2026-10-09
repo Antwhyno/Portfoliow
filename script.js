@@ -1,4 +1,4 @@
-// 1) URL de ton application web Google Apps Script
+// 1) URL de votre application web Google Apps Script
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbzmLNXbHFqTQR8jXOzWts4s03Y62mMcVsxi3B9EL4dyufMK6JuH9pgMnY3gbsmxeN7C/exec";
 
 // 2) Catalogue de produits
@@ -16,7 +16,7 @@ const eur = n => n.toLocaleString("fr-FR", { style: "currency", currency: "EUR" 
 const cart = {};
 let filter = "Tous";
 
-// Décor : animation de couches (si l'élément existe)
+// Animation des couches du héro (sécurisé si présent)
 const layersEl = $("#layers");
 if (layersEl) {
   layersEl.innerHTML = [70, 78, 84, 88, 86, 80, 72, 66, 64, 68, 76, 84, 90]
@@ -28,7 +28,7 @@ function renderFilters() {
   if (!filtersEl) return;
   const cats = ["Tous", ...new Set(PRODUCTS.map(p => p.cat))];
   filtersEl.innerHTML = cats.map(c =>
-    `<button class="chip" data-cat="${c}" aria-pressed="${c === filter}">${c}</button>`).join("");
+    `<button type="button" class="chip" data-cat="${c}" aria-pressed="${c === filter}">${c}</button>`).join("");
 }
 
 function renderProducts() {
@@ -40,7 +40,7 @@ function renderProducts() {
       <div class="prod-b">
         <h3>${p.name}</h3><p>${p.desc}</p>
         <div class="prod-f"><strong>${p.price != null ? eur(p.price) : "Sur devis"}</strong>
-        <button class="btn sm" data-add="${p.id}">Ajouter</button></div>
+        <button type="button" class="btn sm" data-add="${p.id}">Ajouter</button></div>
       </div>
     </article>`).join("");
 }
@@ -50,7 +50,7 @@ function totals() {
   for (const id in cart) {
     const p = PRODUCTS.find(x => x.id === id);
     if (!p) continue;
-    p.price == null ? devis = true : total += p.price * cart[id];
+    p.price == null ? (devis = true) : (total += p.price * cart[id]);
   }
   return { total, devis };
 }
@@ -60,7 +60,7 @@ function renderCart() {
   const countEl = $("#count");
   if (countEl) countEl.textContent = ids.reduce((n, id) => n + cart[id], 0);
 
-  // 1. Mise à jour de la liste dans la page principale
+  // Mise à jour de la liste principale
   const cartEl = $("#cart");
   if (cartEl) {
     cartEl.innerHTML = ids.length ? ids.map(id => {
@@ -68,27 +68,27 @@ function renderCart() {
       return `<li><span>${p.name}</span>
         <button type="button" data-dec="${id}" aria-label="Retirer un ${p.name}">−</button><b>${cart[id]}</b>
         <button type="button" data-inc="${id}" aria-label="Ajouter un ${p.name}">+</button></li>`;
-    }).join("") : `<li class="empty">Aucun article sélectionné.</li>`;
+    }).join("") : `<li class="empty">Aucun article. Ajoutez des produits du catalogue ou décrivez simplement votre projet ci-dessous.</li>`;
   }
 
-  // 2. Mise à jour de la liste récapitulative dans la modale
+  // Mise à jour du récapitulatif dans la boîte modale
   const listePanierEl = $("#liste-panier");
   if (listePanierEl) {
     listePanierEl.innerHTML = ids.length ? ids.map(id => {
       const p = PRODUCTS.find(x => x.id === id);
       const subtotal = p.price != null ? eur(p.price * cart[id]) : "sur devis";
       return `<li>${p.name} (x${cart[id]}) — <strong>${subtotal}</strong></li>`;
-    }).join("") : `<li>Votre panier est vide.</li>`;
+    }).join("") : `<li>Aucun article sélectionné (demande sur mesure).</li>`;
   }
 
-  // 3. Mise à jour des totaux (page + modale)
+  // Totaux
   const { total, devis } = totals();
   const texteTotal = ids.length
-    ? `${eur(total)}${devis ? " + articles sur devis" : ""}`
-    : "0,00 €";
+    ? `Estimation : ${eur(total)}${devis ? " + articles sur devis" : ""}`
+    : "Sur devis";
 
   const totalEl = $("#total");
-  if (totalEl) totalEl.textContent = ids.length ? `Estimation : ${texteTotal}` : "";
+  if (totalEl) totalEl.textContent = ids.length ? texteTotal : "";
 
   const montantTotalEl = $("#montant-total");
   if (montantTotalEl) montantTotalEl.textContent = texteTotal;
@@ -100,104 +100,107 @@ function change(id, d) {
   renderCart();
 }
 
-// Clics généraux (catalogue, quantité, filtres)
+// Clics généraux (catalogue, filtres, sélection de projet)
 document.addEventListener("click", e => {
-  const t = e.target.closest("[data-add],[data-inc],[data-dec],[data-cat]");
+  const t = e.target.closest("[data-add],[data-inc],[data-dec],[data-cat],[data-type]");
   if (!t) return;
   if (t.dataset.add) change(t.dataset.add, 1);
   if (t.dataset.inc) change(t.dataset.inc, 1);
   if (t.dataset.dec) change(t.dataset.dec, -1);
   if (t.dataset.cat) { filter = t.dataset.cat; renderFilters(); renderProducts(); }
+  if (t.dataset.type) {
+    e.preventDefault();
+    if ($("#orderForm") && $("#orderForm").elements.type) {
+      $("#orderForm").elements.type.value = t.dataset.type;
+    }
+    openOrder();
+  }
 });
 
-// Gestion de la modale de commande
-const dlg = $("#orderDialog");
-const form = $("#orderForm") \vert{}\vert{} $("#commandeForm");
-const confirmation = $("#confirmation");
-const btnSubmit = $("#btnSubmit") \vert{}\vert{} $("#send");
-
-function openOrder() {
-  if (Object.keys(cart).length === 0) {
-    alert("Veuillez ajouter au moins un produit à votre commande.");
-    return;
+const form = $("#orderForm");
+const statusEl = $("#status");
+const say = (txt, cls = "") => {
+  if (statusEl) {
+    statusEl.textContent = txt;
+    statusEl.className = cls;
   }
-  if (confirmation) confirmation.style.display = "none";
-  if (form) form.style.display = "block";
+};
+
+// Gestion de la modale
+const dlg = $("#orderDialog");
+function openOrder() {
+  say("");
   renderCart();
-  dlg.showModal();
+  if (dlg) dlg.showModal();
 }
 
 $("#openOrder")?.addEventListener("click", openOrder);
-$("#closeOrder")?.addEventListener("click", () => dlg.close());
+$("#closeOrder")?.addEventListener("click", () => dlg?.close());
 dlg?.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
 
-// Soumission du formulaire vers Google Sheets
+// Soumission du formulaire vers Google Apps Script
 form?.addEventListener("submit", async e => {
   e.preventDefault();
+  if (!form.reportValidity()) return;
 
-  if (Object.keys(cart).length === 0) {
-    alert("Votre panier est vide.");
-    return;
-  }
+  const f = Object.fromEntries(new FormData(form));
+  if (f.website) return; // Anti-spam piège à robots
 
   const { total, devis } = totals();
-  const refCommande = "CMD-" + Date.now().toString(36).toUpperCase();
-
-  // Extraction des valeurs selon les ID présents dans le HTML
-  const payload = {
-    ref: refCommande,
-    nom: $("#nom")?.value || "",
-    email: $("#email")?.value || "",
-    telephone: $("#telephone")?.value || "",
-    remarques: $("#remarques")?.value || "",
+  const data = {
+    ref: "CMD-" + Date.now().toString(36).toUpperCase(),
+    type: f.type || "standard",
+    nom: f.nom || "",
+    email: f.email || "",
+    tel: f.tel || "",
+    livraison: f.livraison || "",
+    lien: f.lien || "",
+    message: f.message || "",
     articles: Object.keys(cart).map(id => {
       const p = PRODUCTS.find(x => x.id === id);
-      return `${p.name} x${cart[id]} (${p.price != null ? eur(p.price * cart[id]) : "sur devis"})`;
-    }).join(" | "),
+      return `${cart[id]} x ${p.name} (${p.price != null ? eur(p.price * cart[id]) : "sur devis"})`;
+    }).join(" | ") || "Aucun article (projet sur mesure)",
     total: devis ? `${eur(total)} + sur devis` : eur(total)
   };
 
-  btnSubmit.disabled = true;
-  btnSubmit.textContent = "Envoi en cours…";
+  const btn = $("#send");
+  if (btn) btn.disabled = true;
+  say("Envoi en cours…");
 
   try {
     if (SHEET_URL) {
+      // mode: "no-cors" est impératif pour éviter le blocage CORS de Google Apps Script
       await fetch(SHEET_URL, {
         method: "POST",
+        mode: "no-cors",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(data)
       });
+      say(`Demande ${data.ref} bien envoyée ! Nous vous répondrons par e-mail.`, "ok");
+    } else {
+      console.info("Mode démo :", data);
+      say(`Mode démo : Demande ${data.ref} enregistrée.`, "ok");
     }
 
-    // Réinitialisation du panier et formulaire
+    form.reset();
     for (const id in cart) delete cart[id];
     renderCart();
-    form.reset();
 
-    // Affichage de la confirmation
-    form.style.display = "none";
-    if (confirmation) {
-      confirmation.textContent = `Merci ! Votre commande (${refCommande}) a bien été enregistrée.`;
-      confirmation.style.display = "block";
-    }
-
+    // Fermeture automatique après 3 secondes
     setTimeout(() => {
-      dlg.close();
-      if (confirmation) confirmation.style.display = "none";
-      form.style.display = "block";
-      btnSubmit.disabled = false;
-      btnSubmit.textContent = "Envoyer la commande";
-    }, 3500);
+      dlg?.close();
+      say("");
+      if (btn) btn.disabled = false;
+    }, 3000);
 
   } catch (err) {
-    console.error("Erreur lors de l'envoi :", err);
-    alert("Une erreur est survenue lors de l'enregistrement. Veuillez réessayer.");
-    btnSubmit.disabled = false;
-    btnSubmit.textContent = "Envoyer la commande";
+    console.error("Erreur d'envoi :", err);
+    say("L'envoi a échoué. Vérifiez votre connexion ou contactez-nous par e-mail.", "err");
+    if (btn) btn.disabled = false;
   }
 });
 
-// Initialisation
+// Initialisation au chargement
 renderFilters();
 renderProducts();
 renderCart();
