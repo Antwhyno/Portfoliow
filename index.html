@@ -99,51 +99,63 @@
     </div>
   </section>
 
-  <section class="sec order" id="commande">
+ <section class="sec order" id="commande">
     <div class="wrap">
       <h2>Prêt à commander ?</h2>
       <p class="sub">Pas de paiement en ligne : nous revenons vers vous avec un devis.</p>
+      
+      <!-- Résumé sur la page principale -->
       <aside class="summary" aria-labelledby="sum-t">
         <h3 id="sum-t">Votre sélection</h3>
         <ul id="cart"></ul>
-        <p class="total" id="total"></p>
+        <p class="total" id="total">0.00 €</p>
         <button class="btn" type="button" id="openOrder">Commander</button>
       </aside>
     </div>
   </section>
 
+  <!-- Fenêtre de finalisation de commande -->
   <dialog id="orderDialog" aria-labelledby="dlg-t">
-    <form id="orderForm" novalidate>
-      <div class="dlg-h"><h3 id="dlg-t">Vos informations</h3><button type="button" class="chip" id="closeOrder">Fermer</button></div>
-      <label>Votre projet
-        <select name="type">
-          <option>Produits du catalogue</option><option>Impression 3D</option><option>Modélisation 3D</option><option>Prototypage / conseil</option>
-        </select>
-      </label>
-      <div class="two">
-        <label>Nom <input name="nom" required autocomplete="name"></label>
-        <label>E-mail <input name="email" type="email" required autocomplete="email"></label>
+    <!-- UN SEUL FORMULAIRE ICI -->
+    <form id="orderForm">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 id="dlg-t">Finaliser ma commande</h2>
+        <!-- Bouton pour fermer la popup -->
+        <button type="button" id="closeOrder" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
       </div>
-      <div class="two">
-        <label>Téléphone (facultatif) <input name="tel" type="tel" autocomplete="tel"></label>
-        <label>Réception
-          <select name="livraison"><option>Retrait sur place</option><option>Envoi par colis</option></select>
-        </label>
+
+      <!-- Récapitulatif du panier dans la popup -->
+      <div id="recap-panier">
+        <h3>Vos articles :</h3>
+        <ul id="liste-panier"></ul>
+        <p><strong>Total estimé : </strong><span id="montant-total">0.00 €</span></p>
       </div>
-      <label>Lien vers votre fichier 3D (facultatif)
-        <input name="lien" type="url" placeholder="Lien Drive, WeTransfer, Dropbox">
-      </label>
-      <label>Décrivez votre besoin
-        <textarea name="message" rows="4" placeholder="Dimensions, matériau, couleur, quantité, date souhaitée"></textarea>
-      </label>
-      <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-      <label class="check"><input type="checkbox" name="rgpd" required> J'accepte que mes données servent à répondre à ma demande.</label>
-      <button class="btn" type="submit" id="send">Envoyer ma commande</button>
-      <p id="status" role="status" aria-live="polite"></p>
+
+      <hr>
+
+      <!-- Champs de coordonnées -->
+      <h3>Vos coordonnées</h3>
+      
+      <label for="nom">Nom complet :</label>
+      <input type="text" id="nom" required placeholder="Jean Dupont">
+
+      <label for="email">Adresse e-mail :</label>
+      <input type="email" id="email" required placeholder="jean@example.com">
+
+      <label for="telephone">Numéro de téléphone :</label>
+      <input type="tel" id="telephone" required placeholder="06 12 34 56 78">
+
+      <label for="remarques">Remarques éventuelles :</label>
+      <textarea id="remarques" placeholder="Instructions de retrait, précisions..."></textarea>
+
+      <button type="submit" id="btnSubmit">Envoyer la commande</button>
     </form>
+
+    <p id="confirmation" style="display: none; color: green; margin-top: 15px;">
+      Merci ! Votre commande a été enregistrée avec succès.
+    </p>
   </dialog>
 </main>
-
 
 <footer class="foot">
   <div class="wrap">
