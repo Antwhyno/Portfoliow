@@ -75,11 +75,18 @@ document.addEventListener("click", e => {
   if (t.dataset.inc) change(t.dataset.inc, 1);
   if (t.dataset.dec) change(t.dataset.dec, -1);
   if (t.dataset.cat) { filter = t.dataset.cat; renderFilters(); renderProducts(); }
-  if (t.dataset.type) $("#orderForm").elements.type.value = t.dataset.type;
+  if (t.dataset.type) { e.preventDefault(); $("#orderForm").elements.type.value = t.dataset.type; openOrder(); }
 });
 
 const form = $("#orderForm"), status = $("#status");
 const say = (txt, cls = "") => { status.textContent = txt; status.className = cls; };
+
+// Fenêtre « Vos informations » : s'ouvre au clic sur Commander
+const dlg = $("#orderDialog");
+function openOrder() { say(""); dlg.showModal(); }
+$("#openOrder").addEventListener("click", openOrder);
+$("#closeOrder").addEventListener("click", () => dlg.close());
+dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
 
 form.addEventListener("submit", async e => {
   e.preventDefault();
