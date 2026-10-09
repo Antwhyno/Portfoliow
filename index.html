@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strate3D : impression et modélisation 3D sur mesure</title>
+<meta name="description" content="Impression 3D, modélisation et prototypage. Demandez un devis gratuit, payez à la remise.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;700&family=Unbounded:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap bar">
+    <a href="#accueil" class="logo">Strate3D</a>
+    <nav aria-label="Navigation principale">
+      <a href="#services">Services</a><a href="#process">Déroulement</a><a href="#produits">Catalogue</a><a href="#commande">Contact</a>
+    </nav>
+    <a href="#commande" class="cart-link">Ma commande <span id="count">0</span></a>
+  </div>
+</header>
+
+<main id="accueil">
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <h1>De l'idée à la pièce en main, couche après couche.</h1>
+        <p class="lead">Nous modélisons, imprimons et finissons vos pièces en 3D : prototypes, objets du quotidien, maquettes et petites séries.</p>
+        <div class="cta">
+          <a class="btn" href="#commande" data-type="Impression 3D">Demander un devis</a>
+          <a class="btn ghost" href="#produits">Voir le catalogue</a>
+        </div>
+        <ul class="trust">
+          <li>Devis sous 24 h</li>
+          <li>PLA, PETG, résine</li>
+          <li>Paiement après devis</li>
+        </ul>
+      </div>
+      <figure class="bed" aria-hidden="true">
+        <div class="layers" id="layers"></div>
+        <figcaption>Couches de 0,2 mm</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="sec" id="services">
+    <div class="wrap">
+      <h2>Trois façons de nous confier votre projet</h2>
+      <p class="sub">Vous avez un fichier, une idée ou juste un problème à résoudre : choisissez votre point de départ.</p>
+      <div class="rows">
+        <article class="row">
+          <h3>Impression 3D</h3>
+          <div>
+            <p>Vous avez un fichier STL ou 3MF. Nous l'imprimons, le vérifions et le nettoyons.</p>
+            <ul class="tags"><li>FDM</li><li>Résine</li><li>Couleurs au choix</li><li>Petites séries</li></ul>
+          </div>
+          <div class="row-end"><span class="price">dès 8 €</span><a class="btn ghost sm" href="#commande" data-type="Impression 3D">Demander un devis</a></div>
+        </article>
+        <article class="row">
+          <h3>Modélisation 3D</h3>
+          <div>
+            <p>Un croquis, une photo ou une pièce cassée suffisent. Nous créons le modèle et vous le validez avant impression.</p>
+            <ul class="tags"><li>Pièce sur mesure</li><li>Reproduction</li><li>Plan technique</li></ul>
+          </div>
+          <div class="row-end"><span class="price">dès 35 €</span><a class="btn ghost sm" href="#commande" data-type="Modélisation 3D">Demander un devis</a></div>
+        </article>
+        <article class="row">
+          <h3>Prototypage et conseil</h3>
+          <div>
+            <p>Choix du matériau, test de forme, itérations rapides : nous vous aidons à passer du prototype au produit final.</p>
+            <ul class="tags"><li>Itérations rapides</li><li>Ponçage et peinture</li><li>Assemblage</li></ul>
+          </div>
+          <div class="row-end"><span class="price">sur devis</span><a class="btn ghost sm" href="#commande" data-type="Prototypage / conseil">Demander un devis</a></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec dark" id="process">
+    <div class="wrap">
+      <h2>Comment ça se passe</h2>
+      <p class="sub">Aucun paiement en ligne. Vous ne payez qu'après avoir accepté le devis.</p>
+      <ol class="steps">
+        <li><b>1</b><h3>Vous nous écrivez</h3><p>Formulaire ci-dessous, avec votre fichier ou votre description.</p></li>
+        <li><b>2</b><h3>Nous chiffrons</h3><p>Devis détaillé par e-mail sous 24 h ouvrées.</p></li>
+        <li><b>3</b><h3>Nous fabriquons</h3><p>Impression, finitions, contrôle qualité.</p></li>
+        <li><b>4</b><h3>Vous récupérez</h3><p>Retrait sur place ou envoi, paiement à la remise ou par virement.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sec" id="produits">
+    <div class="wrap">
+      <h2>Catalogue prêt à imprimer</h2>
+      <p class="sub">Ajoutez des articles à votre commande, nous confirmons le prix et le délai par e-mail.</p>
+      <div class="filters" id="filters" role="group" aria-label="Filtrer par catégorie"></div>
+      <div class="grid" id="grid"></div>
+    </div>
+  </section>
+
+  <section class="sec order" id="commande">
+    <div class="wrap">
+      <h2>Envoyer ma demande</h2>
+      <p class="sub">Pas de paiement en ligne : nous revenons vers vous avec un devis.</p>
+      <div class="order-grid">
+        <aside class="summary" aria-labelledby="sum-t">
+          <h3 id="sum-t">Votre sélection</h3>
+          <ul id="cart"></ul>
+          <p class="total" id="total"></p>
+        </aside>
+        <form id="orderForm" novalidate>
+          <label>Votre projet
+            <select name="type">
+              <option>Produits du catalogue</option><option>Impression 3D</option><option>Modélisation 3D</option><option>Prototypage / conseil</option>
+            </select>
+          </label>
+          <div class="two">
+            <label>Nom <input name="nom" required autocomplete="name"></label>
+            <label>E-mail <input name="email" type="email" required autocomplete="email"></label>
+          </div>
+          <div class="two">
+            <label>Téléphone (facultatif) <input name="tel" type="tel" autocomplete="tel"></label>
+            <label>Réception
+              <select name="livraison"><option>Retrait sur place</option><option>Envoi par colis</option></select>
+            </label>
+          </div>
+          <label>Lien vers votre fichier 3D (facultatif)
+            <input name="lien" type="url" placeholder="Lien Drive, WeTransfer, Dropbox">
+          </label>
+          <label>Décrivez votre besoin
+            <textarea name="message" rows="4" placeholder="Dimensions, matériau, couleur, quantité, date souhaitée"></textarea>
+          </label>
+          <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <label class="check"><input type="checkbox" name="rgpd" required> J'accepte que mes données servent à répondre à ma demande.</label>
+          <button class="btn" type="submit" id="send">Envoyer ma demande</button>
+          <p id="status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <strong>Strate3D</strong>
+    <p>contact@exemple.fr · 06 00 00 00 00 · [Votre ville]</p>
+    <p>Mentions légales · Conditions de vente</p>
+  </div>
+</footer>
+<script src="script.js"></script>
+</body>
+</html>
