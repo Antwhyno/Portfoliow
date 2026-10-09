@@ -103,57 +103,71 @@
     <div class="wrap">
       <h2>Prêt à commander ?</h2>
       <p class="sub">Pas de paiement en ligne : nous revenons vers vous avec un devis.</p>
-      
-      <!-- Résumé sur la page principale -->
       <aside class="summary" aria-labelledby="sum-t">
         <h3 id="sum-t">Votre sélection</h3>
         <ul id="cart"></ul>
-        <p class="total" id="total">0.00 €</p>
+        <p class="total" id="total"></p>
         <button class="btn" type="button" id="openOrder">Commander</button>
       </aside>
     </div>
   </section>
 
-  <!-- Fenêtre de finalisation de commande -->
+  <!-- Modale de commande (UN SEUL formulaire orderForm) -->
   <dialog id="orderDialog" aria-labelledby="dlg-t">
-    <!-- UN SEUL FORMULAIRE ICI -->
-    <form id="orderForm">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2 id="dlg-t">Finaliser ma commande</h2>
-        <!-- Bouton pour fermer la popup -->
-        <button type="button" id="closeOrder" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+    <form id="orderForm" novalidate>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2 id="dlg-t" style="margin: 0;">Finaliser ma commande</h2>
+        <button type="button" id="closeOrder" aria-label="Fermer" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
       </div>
 
-      <!-- Récapitulatif du panier dans la popup -->
+      <!-- Récapitulatif dynamique des articles -->
       <div id="recap-panier">
-        <h3>Vos articles :</h3>
+        <h3>Votre panier :</h3>
         <ul id="liste-panier"></ul>
-        <p><strong>Total estimé : </strong><span id="montant-total">0.00 €</span></p>
+        <p><strong>Total estimé : </strong><span id="montant-total">0,00 €</span></p>
       </div>
 
-      <hr>
+      <hr style="margin: 1rem 0;">
 
-      <!-- Champs de coordonnées -->
-      <h3>Vos coordonnées</h3>
-      
-      <label for="nom">Nom complet :</label>
-      <input type="text" id="nom" required placeholder="Jean Dupont">
+      <!-- Champ piège anti-spam invisible -->
+      <input type="text" name="website" style="display:none;" tabindex="-1" autocomplete="off">
 
-      <label for="email">Adresse e-mail :</label>
-      <input type="email" id="email" required placeholder="jean@example.com">
+      <!-- Coordonnées et détails conformes à google-apps-script.gs -->
+      <div class="fields">
+        <label for="f-type">Type de demande :</label>
+        <select name="type" id="f-type">
+          <option value="catalogue">Commande catalogue</option>
+          <option value="sur-mesure">Pièce sur mesure / Prototypage</option>
+          <option value="devis">Autre devis</option>
+        </select>
 
-      <label for="telephone">Numéro de téléphone :</label>
-      <input type="tel" id="telephone" required placeholder="06 12 34 56 78">
+        <label for="f-nom">Nom complet * :</label>
+        <input type="text" name="nom" id="f-nom" required placeholder="Jean Dupont">
 
-      <label for="remarques">Remarques éventuelles :</label>
-      <textarea id="remarques" placeholder="Instructions de retrait, précisions..."></textarea>
+        <label for="f-email">Adresse e-mail * :</label>
+        <input type="email" name="email" id="f-email" required placeholder="jean@example.com">
 
-      <button type="submit" id="btnSubmit">Envoyer la commande</button>
+        <label for="f-tel">Téléphone :</label>
+        <input type="tel" name="tel" id="f-tel" placeholder="06 12 34 56 78">
+
+        <label for="f-livraison">Mode de réception :</label>
+        <select name="livraison" id="f-livraison">
+          <option value="retrait">Retrait sur place</option>
+          <option value="envoi">Envoi postal</option>
+        </select>
+
+        <label for="f-lien">Lien vers fichier 3D (STL, Thingiverse, etc.) :</label>
+        <input type="url" name="lien" id="f-lien" placeholder="https://...">
+
+        <label for="f-message">Précisions ou description du projet :</label>
+        <textarea name="message" id="f-message" placeholder="Couleurs souhaitées, dimensions, finitions..."></textarea>
+      </div>
+
+      <div style="margin-top: 1.5rem;">
+        <button class="btn" type="submit" id="send">Envoyer la demande</button>
+        <span id="status" style="margin-left: 10px; font-weight: bold;"></span>
+      </div>
     </form>
-
-    <p id="confirmation" style="display: none; color: green; margin-top: 15px;">
-      Merci ! Votre commande a été enregistrée avec succès.
-    </p>
   </dialog>
 </main>
 
