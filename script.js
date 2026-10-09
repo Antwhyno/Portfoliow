@@ -1,5 +1,5 @@
 // 1) URL de votre application web Google Apps Script
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbzmLNXbHFqTQR8jXOzWts4s03Y62mMcVsxi3B9EL4dyufMK6JuH9pgMnY3gbsmxeN7C/exec";
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbwiRqeclbB6Xqh1yywlGP7zpU2MT2UX0KdkxYCqDJXHIQ0A_bu-AjLvpZqfMaBAvmzh/exec";
 
 // 2) Catalogue de produits
 const PRODUCTS = [
