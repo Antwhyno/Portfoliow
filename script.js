@@ -98,7 +98,10 @@ form.addEventListener("submit", async e => {
     ref: "CMD-" + Date.now().toString(36).toUpperCase(),
     type: f.type, nom: f.nom, email: f.email, tel: f.tel || "", livraison: f.livraison,
     lien: f.lien || "", message: f.message || "",
-    articles: Object.keys(cart).map(id => `${cart[id]} x ${PRODUCTS.find(p => p.id === id).name}`).join(" | ") || "Aucun",
+    articles: Object.keys(cart).map(id => {
+      const p = PRODUCTS.find(x => x.id === id);
+      return `${cart[id]} x ${p.name} (${p.price != null ? eur(p.price * cart[id]) : "sur devis"})`;
+    }).join(" | ") || "Aucun",
     total: devis ? `${total} + sur devis` : String(total)
   };
   const btn = $("#send");
