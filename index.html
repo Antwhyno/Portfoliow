@@ -144,6 +144,18 @@
   </dialog>
 </main>
 
+<form id="commandeForm">
+  <input type="text" id="nom" placeholder="Votre nom" required>
+  <input type="email" id="email" placeholder="Votre adresse e-mail" required>
+  <input type="tel" id="telephone" placeholder="Votre numéro de téléphone" required>
+  <textarea id="message" placeholder="Articles choisis ou message particulier" required></textarea>
+  
+  <button type="submit" id="btnSubmit">Valider la commande</button>
+</form>
+
+<p id="confirmation" style="display:none; color: green; margin-top: 10px;">
+  Votre commande a bien été enregistrée !
+</p>
 <footer class="foot">
   <div class="wrap">
     <strong>Strate3D</strong>

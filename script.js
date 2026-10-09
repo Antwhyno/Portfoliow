@@ -1,5 +1,5 @@
 // 1) Collez ici l'URL de votre application web Google Apps Script (voir google-apps-script.gs)
-const SHEET_URL = "";
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbzmLNXbHFqTQR8jXOzWts4s03Y62mMcVsxi3B9EL4dyufMK6JuH9pgMnY3gbsmxeN7C/exec";
 
 // 2) Votre catalogue : modifiez, ajoutez ou supprimez des lignes. price: null = sur devis.
 // Pour une vraie photo, ajoutez image: "images/mon-produit.jpg"
